@@ -48,6 +48,15 @@ def api_aluno(id_aluno):
 def api_monitores():
     with app.app_context():
         monitores = query_db("SELECT * FROM Monitor")
+        for monitor in monitores:
+            topicos = query_db(
+                """SELECT Topico.id_topico, Topico.nome, Topico.materia FROM Topico, TopicoMonitor, Monitor
+                    WHERE TopicoMonitor.id_topico = Topico.id_topico
+                      AND TopicoMonitor.id_monitor = Monitor.id_monitor   
+                      AND Monitor.id_monitor = ?
+                """, monitor["id_monitor"])
+            monitor["topicos"] = topicos
+            monitor["media"] = query_db("SELECT AVG(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", monitor["id_monitor"])[0]
         return jsonify(monitores)
 
 
@@ -62,8 +71,7 @@ def api_monitor(id_monitor):
                   AND Monitor.id_monitor = ?
             """, id_monitor)
         monitor["topicos"] = topicos
-        # colocar media
-        monitor["media"] = query_db("SELECT avg(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", id_monitor)
+        monitor["media"] = query_db("SELECT AVG(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", id_monitor)[0]
         return jsonify(monitor)
 
 
