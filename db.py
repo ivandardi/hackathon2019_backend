@@ -15,7 +15,7 @@ def decode(i):
 
 
 def rand_pair(n):
-    return decode(random.randrange(n * (n - 1) // 2))
+    return decode(random.uniform(n * (n - 1) // 2))
 
 
 def rand_pairs(n, m):
@@ -80,7 +80,7 @@ with db:
         VALUES (?, ?, ?, ?, ?)
         """,
                    ("Aluno {}".format(i), "aluno{}@email.com".format(i), random.choice(instituicoes),
-                    random.randrange(7.0, 350.0), random.randint(0, 1))
+                    random.uniform(7.0, 350.0), random.randint(0, 1))
                    )
     alunos = [id for (id,) in db.execute("SELECT id_aluno FROM Aluno")]
 
@@ -90,7 +90,7 @@ with db:
         VALUES (?, ?, ?, ?, ?, ?)
         """,
                    ("Monitor {}".format(i), "monitor{}@email.com".format(i), random.choice(instituicoes),
-                    "Terças e Quintas às 14h00", random.randrange(0.15, 0.50), random.randint(0, 1))
+                    "Terças e Quintas às 14h00", random.uniform(0.15, 0.50), random.randint(0, 1))
                    )
     monitores = [id for (id,) in db.execute("SELECT id_monitor FROM Monitor")]
 
@@ -110,13 +110,13 @@ with db:
         db.execute("""
         INSERT INTO TopicoAluno (id_aluno, id_topico)
         VALUES (?, ?)
-    """, (alunos[a], topicos[b]))
+    """, (alunos[a], topicos[random.randrange(0, len(topicos) - 1)]))
 
     for a, b in rand_pairs(QTD, 75):
-        db.execut("""
+        db.execute("""
         INSERT INTO TopicoMonitor (id_monitor, id_topico)
         VALUES (?, ?)
-        """, (monitores[a], topicos[b]))
+        """, (monitores[a], topicos[random.randrange(0, len(topicos) - 1)]))
 
     db.executemany("""
     INSERT INTO Atendimento (id_aluno, id_monitor, id_topico, datetime_inicio, datetime_fim, avaliacao)
