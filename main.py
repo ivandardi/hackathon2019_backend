@@ -56,7 +56,7 @@ def api_monitores():
                       AND Monitor.id_monitor = ?
                 """, monitor["id_monitor"])
             monitor["topicos"] = topicos
-            monitor["media"] = query_db("SELECT AVG(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", monitor["id_monitor"])[0]
+            monitor["media"] = query_db("SELECT AVG(avaliacao) AS media FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", monitor["id_monitor"])[0]["media"]
         return jsonify(monitores)
 
 
@@ -71,7 +71,7 @@ def api_monitor(id_monitor):
                   AND Monitor.id_monitor = ?
             """, id_monitor)
         monitor["topicos"] = topicos
-        monitor["media"] = query_db("SELECT AVG(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", id_monitor)[0]
+        monitor["media"] = query_db("SELECT AVG(avaliacao) AS media FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", id_monitor)[0]["media"]
         return jsonify(monitor)
 
 
