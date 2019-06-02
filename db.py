@@ -80,7 +80,7 @@ with db:
         VALUES (?, ?, ?, ?, ?)
         """,
                    ("Aluno {}".format(i), "aluno{}@email.com".format(i), random.choice(instituicoes),
-                    random.uniform(7.0, 350.0), random.randint(0, 1))
+                    random.uniform(100.0, 700.0), random.randint(0, 1))
                    )
     alunos = [id for (id,) in db.execute("SELECT id_aluno FROM Aluno")]
 
@@ -110,23 +110,19 @@ with db:
         db.execute("""
         INSERT INTO TopicoAluno (id_aluno, id_topico)
         VALUES (?, ?)
-    """, (alunos[a], topicos[random.randrange(0, len(topicos) - 1)]))
+    """, (alunos[a], random.choice(topicos)))
 
     for a, b in rand_pairs(QTD, 75):
         db.execute("""
         INSERT INTO TopicoMonitor (id_monitor, id_topico)
         VALUES (?, ?)
-        """, (monitores[a], topicos[random.randrange(0, len(topicos) - 1)]))
+        """, (monitores[a], random.choice(topicos)))
 
-    db.executemany("""
-    INSERT INTO Atendimento (id_aluno, id_monitor, id_topico, datetime_inicio, datetime_fim, avaliacao)
-    VALUES (?, ?, ?, ?, ?, ?)
-    """,
-                   [(alunos[0], monitores[0], topicos[0], "2019-05-20 16:40:53", "2019-05-20 16:20:16", 9),
-                    (alunos[0], monitores[0], topicos[2], "2019-05-25 09:15:37", "2019-05-25 09:55:56", 9.3),
-                    (alunos[1], monitores[1], topicos[4], "2019-05-06 05:52:42", "2019-05-06 06:15:34", 10),
-                    (alunos[1], monitores[2], topicos[4], "2019-05-13 17:24:15", "2019-05-13 17:32:36", 5),
-                    (alunos[2], monitores[2], topicos[5], "2019-05-23 10:35:16", "2019-05-23 10:51:47", 7)]
-                   )
+    for _ in range(300):
+        db.execute("""
+        INSERT INTO Atendimento (id_aluno, id_monitor, id_topico, datetime_inicio, datetime_fim, avaliacao)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """, (random.choice(alunos), random.choice(monitores), random.choice(topicos), "2019-05-20 16:40:53", "2019-05-20 17:15:17", random.uniform(0, 10)))
+
 
 db.close()
