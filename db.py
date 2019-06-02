@@ -10,9 +10,10 @@ with db:
         email TEXT UNIQUE NOT NULL,
         instituicao TEXT NOT NULL,
         credito FLOAT NOT NULL,
-        online INTEGER NOT NULL
-    );
-    
+        online INTEGER NOT NULL)
+    """)
+
+    db.execute("""
     CREATE TABLE Monitor (
         id_monitor INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
@@ -20,25 +21,29 @@ with db:
         instituicao TEXT NOT NULL,
         descricao TEXT NOT NULL,
         reais_por_minuto FLOAT NOT NULL,
-        online INTEGER NOT NULL
-    );
-    
+        online INTEGER NOT NULL)
+    """)
+
+    db.execute("""
     CREATE TABLE Topico (
         id_topico INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT UNIQUE NOT NULL,
-        materia TEXT NOT NULL
-    );
-    
+        materia TEXT NOT NULL)
+    """)
+
+    db.execute("""
     CREATE TABLE TopicoAluno (
         id_topico INTEGER REFERENCES Topico (id_topico),
-        id_aluno INTEGER REFERENCES Aluno (id_aluno)
-    );
-    
+        id_aluno INTEGER REFERENCES Aluno (id_aluno))
+    """)
+
+    db.execute("""
     CREATE TABLE TopicoMonitor (
         id_topico INTEGER REFERENCES Topico (id_topico),
-        id_monitor INTEGER REFERENCES Monitor (id_monitor)
-    );
-    
+        id_monitor INTEGER REFERENCES Monitor (id_monitor))
+    """)
+
+    db.execute("""
     CREATE TABLE Atendimento (
         id_atendimento INTEGER PRIMARY KEY AUTOINCREMENT,
         id_aluno INTEGER REFERENCES Aluno (id_aluno),
@@ -46,10 +51,8 @@ with db:
         id_topico INTEGER REFERENCES Topico (id_topico),
         datetime_inicio TEXT NOT NULL,
         datetime_fim TEXT NOT NULL,
-        avaliacao INTEGER NOT NULL
-    );
+        avaliacao INTEGER NOT NULL)
     """)
-
 
     db.execute("""
     INSERT INTO Aluno (nome, email, instituicao, credito, online)
