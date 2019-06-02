@@ -44,6 +44,13 @@ def api_aluno(id_aluno):
         return jsonify(aluno)
 
 
+@app.route("/monitores/")
+def api_monitores():
+    with app.app_context():
+        monitores = query_db("SELECT * FROM Monitor")
+        return jsonify(monitores)
+
+
 @app.route("/monitor/<int:id_monitor>/")
 def api_monitor(id_monitor):
     with app.app_context():
@@ -55,6 +62,8 @@ def api_monitor(id_monitor):
                   AND Monitor.id_monitor = ?
             """, id_monitor)
         monitor["topicos"] = topicos
+        # colocar media
+        monitor["media"] = query_db("SELECT avg(avaliacao) FROM Atendimento NATURAL JOIN Monitor WHERE id_monitor = ?", id_monitor)
         return jsonify(monitor)
 
 
@@ -85,7 +94,7 @@ def api_atendimentos():
                 request.form["datetime_inicio"],
                 request.form["datetime_fim"],
                 request.form["avaliacao"],
-                )
+            )
 
             dt_inicio = parse(request.form["datetime_inicio"])
             dt_fim = parse(request.form["datetime_fim"])
@@ -106,12 +115,5 @@ def api_atendimentos():
             return jsonify(atendimento)
 
 
-@app.route("/atendimento/<int:id_atendimento>/")
-def api_atendimento(id_atendimento):
-    with app.app_context():
-        atendimento = query_db("SELECT * FROM Topico WHERE id_atendimento = ?", id_atendimento)[0]
-        return jsonify(atendimento)
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
