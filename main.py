@@ -30,6 +30,21 @@ def query_db(query, *args):
     return [{key: row[key] for key in row.keys()} for row in rv]
 
 
+@app.route("/alunos/")
+def api_alunos():
+    with app.app_context():
+        alunos = query_db("SELECT * FROM Aluno")
+        for aluno in alunos:
+            topicos = query_db(
+                """SELECT Topico.id_topico, Topico.nome, Topico.materia FROM Topico, TopicoAluno, Aluno
+                    WHERE TopicoAluno.id_topico = Topico.id_topico
+                      AND TopicoAluno.id_aluno = Aluno.id_aluno   
+                      AND Aluno.id_aluno = ?
+                """, aluno["id_aluno"])
+            aluno["topicos"] = topicos
+        return jsonify(alunos)
+
+
 @app.route("/aluno/<int:id_aluno>/")
 def api_aluno(id_aluno):
     with app.app_context():
